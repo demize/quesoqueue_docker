@@ -7,17 +7,28 @@ and `docker-compose.yml` for Shoujo's [Queso Queue Plus][qqpgithub] project.
 
 # Using the container
 
-Docker Compose is the easiest way to use this container, and the example Compose
-file should be usable with a properly configured `queso.env` file. The variables
-in that file are defined per the variables in the upstream `settings.js` file;
-please refer to [that file][settings.js] for the documentation.
+Docker Compose is the easiest way to use this container, so this brief guide to
+using the container will focus on using Compose. First, create `queso.env` from
+`queso.env.sample`, and edit it as appropriate. This file is used to generate a
+custom [`settings.js`][settings.js] file on the container's first startup, which
+is then kept in the container's volume. Second, you want to make sure that the
+folder mounted to `/srv/queso/config` exists and is at least read/write for UID
+1000, the UID of the node user inside the container. By default, this folder is
+in the same directory as this README and the docker-compose.yml, but if you need
+to put it somewhere else, feel free to edit the path in the Compose file.
 
-This container does need to mount a config folder to function. This folder
-should be mounted to `/srv/queso/config` and does not need to contain anything
-initially; it will be populated automatically on first start with four files:
-customCodes.json (used to store custom codes), queso.save (used to store the queue
-state), and userWaitTime.txt and waitingUsers.txt (used to keep track of how long
-users have been waiting in the queue). If this folder is not mounted, the 
-container will refuse to start.
+Once your `queso.env` is created and your config folder is set up properly, you
+can start the container: `docker compose up`. This will start the container and
+refrain from detaching from it, so you can be sure the bot started properly. To
+stop the bot, just hit Control+C, and then restart it with `docker compose up -d`
+to detach from it and let it run in the background.
+
+Since the bot does some initial configuration in its ephemeral volume the first
+time it starts, it is not recommended to stop the bot with `docker compose down`.
+This will remove the container's volume, making it redo that initial setup. This
+also means that if you change any settings in the `queso.env` file, you need to
+remove that volume to regenerate those settings, and you can do that easily
+through `docker compose down`. Any other times you wish to stop the bot, you'll
+be best served with `docker compose stop` instead.
 
 [settings.js]: https://github.com/ToransuShoujo/quesoqueue_plus/blob/master/settings.js
