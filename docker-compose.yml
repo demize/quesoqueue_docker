@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  queso:
+    container_name: queso
+    image: demize/quesoqueue:dev
+    env_file:
+      - queso.env
+    volumes:
+      - ${PWD}/config:/srv/queso/config
