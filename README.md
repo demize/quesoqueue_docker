@@ -41,10 +41,25 @@ and `docker-compose.yml` for Shoujo's [Queso Queue Plus][qqpgithub] project.
    the container, run `docker compose rm -v` to remove the container and its
    anonymous volume, forcing the configuration to be regenerated the next time
    it starts.
-9. When a new update is released, first stop and remove the container with the
-   command `docker compose down -v` and then update it with `docker compose pull`.
-   The container and configuration will then be rebuilt the next time you start
-   it, using the updated version of the container.
+
+## Updating
+
+Updating automatically is strongly discouraged, as the upstream bot is neither
+versioned nor stable, so any change could be breaking. While this container is
+manually tested every version, and tries to act as a forward compatibility layer,
+no guarantees can be made that an update will not break your setup.
+
+To update, it is always recommended to remove the container first with either
+`docker compose down -v` or `docker compose rm -v`, then pull the latest version
+with `docker compose pull` and start it non-detached to ensure it works without
+issues.
+
+Should you run into any issues, please double check the documentation (the env
+file in particular) to see if anything changed; you can also check the commit
+history of this repository to see what changes specifically were made. If you
+cannot solve the issue, please [open an issue][issue] and we'll try to help.
+
+[issue]: https://github.com/demize/quesoqueue_docker/issues/new
 
 ## Advanced use
 
