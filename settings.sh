@@ -17,5 +17,3 @@ cat <<- EOF > settings.json
   "dataIdMakerThreshold": $( if [ x$DATAID_MAKER_THRESHOLD = x ]; then echo null; elif [ x$DATAID_MAKER_THRESHOLD = xundefined ]; then echo null; else echo $DATAID_MAKER_THRESHOLD; fi)
 }
 EOF
-
-echo "Config set up" > configured.txt

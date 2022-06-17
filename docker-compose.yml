@@ -7,4 +7,5 @@ services:
     env_file:
       - queso.env
     volumes:
-      - ${PWD}/config:/srv/queso/config
+      # - ${PWD}/config:/srv/queso/config # Old config directory, only needed for migration
+      - ${PWD}/data:/srv/queso/data

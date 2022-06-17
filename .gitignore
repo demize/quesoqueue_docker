@@ -3,3 +3,4 @@ queso.env
 
 # Here be stuff that the bot generates on its own
 config/
+data/

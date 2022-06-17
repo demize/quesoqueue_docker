@@ -19,7 +19,11 @@ and `docker-compose.yml` for Shoujo's [Queso Queue Plus][qqpgithub] project.
 4. Create a folder on your machine to store the Compose configuration in, with:
    1. The docker-compose.yml from this repository
    2. queso.env.sample from this repository, renamed to queso.env
-   3. An empty folder named "config"
+   3. An empty folder named "data"
+      - If you're upgrading from a previous version of the bot, you may have a
+        "config" folder. This is not the same folder, and if you're upgrading,
+        you want to leave this folder--please see the [V2 FAQ][v2faq] for full
+        details.
 5. Edit queso.env as necessary. The key values to change are USERNAME, PASSWORD,
    and CHANNEL. Set the username to the username you decided on in step 2, the
    password to the oauth token you wrote down in step 3, and the channel to your
@@ -41,6 +45,8 @@ and `docker-compose.yml` for Shoujo's [Queso Queue Plus][qqpgithub] project.
    the container, run `docker compose rm -v` to remove the container and its
    anonymous volume, forcing the configuration to be regenerated the next time
    it starts.
+
+[v2faq]: https://github.com/demize/quesoqueue_docker/wiki/V2-Migration-FAQ
 
 ## Updating
 
@@ -75,20 +81,13 @@ container yourself, you will need to provide this argument; this could be useful
 if you need a specific version that was not built and published to Docker hub.
 
 This container uses environment variables to generate a configuration file the
-first time you start the container. This overwrites the `settings.js` file that
-comes with the bot source, and it writes a `configured.txt` file next to it to
-track that this initial configuration has been completed. While all options in
-settings.js are exposed through the environment, it is possible to manually make
-a settings.js file and bind mount it to the container, just make sure to also
-mount a configured.txt file (the contents don't matter). This also means that
-you can regenerate the config by deleting configured.txt from `/srv/queso` within
-the container, to update it without removing the container.
+first time you start the container. It first checks to see if `settings.json` is
+in `/srv/queso` and if not, it creates that file based on the data provided in
+the envrionment. If you want to regenerate the config, the easiest way is to
+remove the container, but you can also delete just `settings.json` to force it.
+It should also be possible to bind mount your own config, though unsupported.
 
-The files in the `config` directory are symbolically linked to files within the
-container, to persist the information in those files between container shutdowns.
-This folder is checked for by the entrypoint script, which also generates the
-settings as described above. If, for any reason, you need to mount those files
-directly, then as long as you mount settings.js directly, you can bypass the
-entrypoint script by specifying your own in the Compose config. How to do this
-is left as an exercise for the reader, and I would recommend running the bot
-directly from source rather than proceeding with this method.
+The `data` directory contains two files when used with this container: first, it
+has `queue.json`, which is where the bot expects it to be. It also has the JSON
+file where custom level codes are stored, `customCodes.json`, which is symlinked
+to the bot root whenever the container starts.
